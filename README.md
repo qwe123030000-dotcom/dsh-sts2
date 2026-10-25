@@ -150,6 +150,35 @@ AI 会调用：
 
 ---
 
+## 装不上怎么办（国内网络 / pnpm 拦截）
+
+**症状 1：pnpm 报 `git-hosted plugins build on install ...`**
+
+pnpm 默认不信任 git 包的 prepare 脚本，需要放行。打开 profile 的 `pnpm-workspace.yaml`，加上：
+
+```yaml
+allowBuilds:
+  - dsh-sts2
+```
+
+**症状 2：报 `Failed to connect to github.com:443`**
+
+国内直连 github 常常不通。让 git 把 https 换成 ssh（需要先在 GitHub 上配好 SSH key）：
+
+```bash
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+```
+
+**症状 3：什么都不想折腾**
+
+下载仓库 zip，解压到本地，用本地路径安装：
+
+```bash
+dsh plugin --profile desktop add link:C:/path/to/dsh-sts2
+```
+
+---
+
 ## 和 QQ 桥接的关系
 
 这个插件**只负责打牌**。

@@ -10,31 +10,61 @@
 
 ---
 
-## 安装
+## 一条链接，全自动
 
-```bash
-dsh plugin --profile desktop add link:C:/path/to/dsh-sts2
+把你的 DSH 打开，直接跟它说：
+
+> 读 https://github.com/qwe123030000-dotcom/dsh-sts2 的 README，把插件装好、模组装好，然后验证能不能连上。
+
+它会做这些事：
+
+1. `dsh plugin --profile desktop add github:qwe123030000-dotcom/dsh-sts2`
+2. 提示你重启 DSH（插件只在启动时组装）
+3. 跑 `tools/install-mods.ps1`，自动找到游戏目录并把两个模组装进 `mods\`
+4. 跑 `verify.ps1` 检查端口和 MCP 接口
+
+**最后只剩一件它替你做不了的事**：进游戏按 `F8` → `Connect` → 勾选 MCP 服务。
+
+---
+
+## 仓库里自带模组
+
+```
+mods/STS2AIAgent/        STS2AIAgent.dll / .pck / mod_id.json
+mods/DirectConnectIP/    DirectConnectIP.dll / .pck / .json
 ```
 
-或者从本地目录：
+模组版权归各自作者（见 `THIRD_PARTY.md`），这里只是打包方便一键安装。
+版本：DirectConnectIP 2.111.0（适配游戏 v0.111），STS2-Agent v0.16.2。
 
-```bash
-cd C:/path/to/dsh-sts2
-dsh plugin --profile desktop add link:.
+手动装也可以：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/install-mods.ps1
+# 找不到目录时手动指定
+powershell -ExecutionPolicy Bypass -File tools/install-mods.ps1 -GameDir "D:\SteamLibrary\steamapps\common\Slay the Spire 2"
 ```
 
-装完确认 profile 的 `package.json` 里：
+---
+
+## 手动安装插件
+
+```bash
+dsh plugin --profile desktop add github:qwe123030000-dotcom/dsh-sts2
+```
+
+装完**必须重启 DSH**——插件只在启动时组装，不重启就看不到 `sts2_*` 这些工具。
+
+确认 profile 的 `package.json` 里出现了：
 
 ```json
 {
-  "dependencies": { "dsh-sts2": "link:..." },
+  "dependencies": { "dsh-sts2": "github:..." },
   "dsh": { "profile": { "bundles": [ ..., "dsh-sts2" ] } }
 }
 ```
 
-**bundle 层的改动要重启 DSH 才生效。**
-
-卸载：
+不想要了（可选）：
 
 ```bash
 dsh plugin --profile desktop remove dsh-sts2
@@ -46,16 +76,16 @@ dsh plugin --profile desktop remove dsh-sts2
 
 | 项 | 说明 |
 |---|---|
-| **STS2-Agent 模组** | 必需。把游戏状态暴露成 MCP 接口 |
-| **DirectConnectIP 模组** | 异地联机必需（IP 直连） |
+| **STS2-Agent 模组** | 必需，本仓库自带，`install-mods.ps1` 会装 |
+| **DirectConnectIP 模组** | 异地联机必需，本仓库自带 |
 | **Tailscale** | 虚拟局域网，双方加入同一 tailnet 并互相授权 |
 | **版本一致** | 所有人同一个游戏版本，否则连不上 |
 
-**模组必须是文件夹**，散放的 dll 不会被加载：
+模组必须放成**文件夹**，散放的 dll 不会被加载（脚本已经按正确结构放好）：
 
 ```
-正确  mods\STS2Agent\*.dll
-错误  mods\STS2Agent.dll
+正确  mods\STS2AIAgent\*.dll
+错误  mods\STS2AIAgent.dll
 ```
 
 进游戏后：
@@ -64,7 +94,7 @@ dsh plugin --profile desktop remove dsh-sts2
 F8 -> Connect -> 勾选启用 MCP 服务
 ```
 
-默认端口分工：
+端口分工：
 
 ```
 8080  人类操作窗口
@@ -79,7 +109,7 @@ F8 -> Connect -> 勾选启用 MCP 服务
 powershell -ExecutionPolicy Bypass -File verify.ps1
 ```
 
-会检查：8080/8081 是否在听、MCP 接口是否响应、插件是否已挂上。
+检查：8080/8081 是否在听、MCP 接口是否响应、插件是否已挂上。
 
 ---
 
@@ -113,7 +143,7 @@ AI 会调用：
 | 现象 | 原因 | 解决 |
 |---|---|---|
 | 连不上 8081 | 游戏里没开 MCP 服务 | F8 → Connect → 勾选 |
-| 模组列表里看不到 | 文件散放在 mods 根目录 | 改文件夹 |
+| 模组列表里看不到 | 文件散放在 mods 根目录 | 用 `install-mods.ps1` 重装 |
 | 直连找不到房间 | 版本不一致 / 没装 DirectConnectIP | 核对版本 |
 | AI 收到打牌指令却一直等 | 提示词里还在等 QQ 消息 | 用 `prompts/ai-play.md` 的硬规则 |
 | 越打越慢 | 上下文爆炸 | 40 轮重置一次会话 |
@@ -134,9 +164,10 @@ AI 会调用：
 
 - 安装与游戏侧要求（本页）
 - [QQ 桥接搭建说明](docs/qq-bridge.md) —— 想让 AI 同时在群里说话，看这份
+- [第三方说明](THIRD_PARTY.md)
 
 ---
 
 ## 许可
 
-MIT。游戏模组（STS2-Agent、DirectConnectIP）版权归各自作者。
+MIT（本项目代码）。游戏模组版权归各自作者，详见 `THIRD_PARTY.md`。

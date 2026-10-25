@@ -18,7 +18,12 @@
   "files": [
     "cordis.patch.yml",
     "prompts",
+    "mods",
+    "tools",
+    "docs",
     "README.md",
+    "THIRD_PARTY.md",
+    "CHANGELOG.md",
     "verify.ps1"
   ],
   "dsh": {

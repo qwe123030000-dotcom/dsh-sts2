@@ -1,0 +1,31 @@
+{
+  "name": "dsh-sts2",
+  "version": "0.1.0",
+  "description": "让 DSH 直接玩《杀戮尖塔 2》：作为正常玩家和好友联机，能读局面、能出牌。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "sts2",
+    "slay-the-spire",
+    "agent"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "dsh": ">=0.2.0-rc.2"
+  },
+  "files": [
+    "cordis.patch.yml",
+    "prompts",
+    "README.md",
+    "verify.ps1"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": [
+        "./cordis.patch.yml"
+      ]
+    }
+  }
+}

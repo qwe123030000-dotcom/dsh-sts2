@@ -1,0 +1,24 @@
+# ============================================================================
+# dsh-sts2 —— DSH bundle patch
+# ============================================================================
+# 这个包不给 DSH 增加新的运行时代码，只做一件事：
+#   往 profile 的配置树里插一个 MCP 客户端，指向《杀戮尖塔 2》的 STS2-Agent 模组。
+#
+# 游戏侧要求（缺一个都连不上）：
+#   1. 装了 STS2-Agent 模组，并且是「文件夹」形式放在 mods\ 下
+#   2. 进游戏后 F8 -> Connect -> 勾选启用 MCP 服务
+#   3. 默认地址 http://127.0.0.1:8081/mcp
+#
+# 如果你的端口不是 8081，改下面 url 这一行。
+# ============================================================================
+
+- insert:
+    - id: sts2-agent
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: sts2
+        transport: streamable-http
+        url: http://127.0.0.1:8081/mcp
+        toolCallTimeoutMs: 180000
+        reconnect:
+          enabled: true
